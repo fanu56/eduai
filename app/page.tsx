@@ -404,7 +404,7 @@ export default function Home() {
         </div>
 
         <div className="mx-auto mt-10 max-w-7xl border-t border-slate-800 pt-7 text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} EduAI. All rights reserved.
+          © 2026 EduAI. All rights reserved.
         </div>
       </footer>
 
