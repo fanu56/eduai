@@ -54,7 +54,7 @@ export default function SignupPage() {
         </h1>
 
         <p className="mb-8 text-gray-600">
-          Start your personalized O-Level learning journey.
+          Start your personalized O-Level learning journey. Learn smarter
         </p>
 
         <form onSubmit={handleSignup} className="space-y-5">
