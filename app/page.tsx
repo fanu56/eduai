@@ -134,17 +134,17 @@ export default function Home() {
 
               <div className="space-y-6 py-7">
                 <div className="max-w-[85%] rounded-2xl rounded-tl-none bg-slate-100 p-4 text-sm leading-6">
-                  Hello! 👋 I'm your personal O-Level tutor.
+                  Hello! 👋 I&apos;m your personal O-Level tutor.
                   What would you like to learn today?
                 </div>
 
                 <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-none bg-blue-600 p-4 text-sm leading-6 text-white">
-                  Can you explain Newton's Second Law?
+                  Can you explain Newton&apos;s Second Law?
                 </div>
 
                 <div className="max-w-[90%] rounded-2xl rounded-tl-none bg-blue-50 p-4 text-sm leading-6">
                   <p className="mb-3 font-bold text-blue-700">
-                    Newton's Second Law
+                    Newton&apos;s Second Law
                   </p>
                   It states that the acceleration of an object is directly
                   proportional to the resultant force and inversely
