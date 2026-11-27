@@ -1,9 +1,18 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BookOpen, BrainCircuit, GraduationCap, MessageCircle, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-slate-50" aria-label="Loading dashboard" />}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+async function DashboardContent() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
 

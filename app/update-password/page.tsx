@@ -1,9 +1,18 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { UpdatePasswordForm } from "./update-password-form";
 
-export default async function UpdatePasswordPage() {
+export default function UpdatePasswordPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-slate-50" aria-label="Loading password form" />}>
+      <UpdatePasswordContent />
+    </Suspense>
+  );
+}
+
+async function UpdatePasswordContent() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
 
