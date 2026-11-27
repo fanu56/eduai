@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 
 export function UpdatePasswordForm() {
   const router = useRouter();
-  const supabase = createClient();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -23,6 +22,7 @@ export function UpdatePasswordForm() {
 
     setLoading(true);
     try {
+      const supabase = createClient();
       const { error } = await supabase.auth.updateUser({ password });
       if (error) {
         setMessage(error.message);
