@@ -17,6 +17,8 @@ EduAI is a learning platform for Cambridge O-Level students. The current milesto
 
 The authentication pages are `/signup`, `/login`, `/forgot-password`, and `/update-password`. Email confirmation and password reset use `/auth/callback`. Configure those callback URLs in Supabase Auth URL settings for each environment you use. Keep `.env.local` out of version control.
 
+The authenticated student area is under `/dashboard`. It includes the overview, subject catalog, tutor, practice, past papers, progress, chat history, account settings, plan details, and help pages. Data-driven features are displayed as honest empty states until their database or service integrations are implemented.
+
 ## Checks
 
 - `npm run lint`
