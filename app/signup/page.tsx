@@ -1,128 +1,89 @@
-
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
   const router = useRouter();
-  const supabase = createClient();
-
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSignup(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSignup(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setMessage("");
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: { full_name: fullName.trim() },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
-      },
-    });
+      });
 
-    setLoading(false);
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
 
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-
-    if (data.session) {
-      router.push("/dashboard");
-      router.refresh();
-    } else {
-      setMessage("Account created! Please check your email to confirm your account.");
+      if (data.session) {
+        router.replace("/dashboard");
+        router.refresh();
+      } else {
+        setMessage("Account created. Check your email for a confirmation link.");
+      }
+    } catch {
+      setMessage("We couldn’t create your account. Check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="mb-2 text-3xl font-bold text-gray-900">
-          Create your EduAI account
-        </h1>
-
-        <p className="mb-8 text-gray-600">
-          Start your personalized O-Level learning journey. Learn smarter
-        </p>
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-10">
+      <section className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+        <Link href="/" className="text-sm font-semibold text-blue-700 hover:underline">← EduAI home</Link>
+        <h1 className="mt-6 text-3xl font-bold text-slate-900">Create your EduAI account</h1>
+        <p className="mb-8 mt-2 text-slate-600">Start your personalized O-Level learning journey.</p>
 
         <form onSubmit={handleSignup} className="space-y-5">
           <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Full Name
-            </label>
-            <input
-              type="text"
-              required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none focus:border-blue-600"
-            />
+            <label htmlFor="full-name" className="mb-2 block font-medium text-slate-700">Full name</label>
+            <input id="full-name" type="text" autoComplete="name" required maxLength={100}
+              value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Enter your full name"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100" />
           </div>
-
           <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Email Address
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none focus:border-blue-600"
-            />
+            <label htmlFor="email" className="mb-2 block font-medium text-slate-700">Email address</label>
+            <input id="email" type="email" autoComplete="email" required maxLength={254}
+              value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Enter your email"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100" />
           </div>
-
           <div>
-            <label className="mb-2 block font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Create a password (at least 6 characters)"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none focus:border-blue-600"
-            />
+            <label htmlFor="password" className="mb-2 block font-medium text-slate-700">Password</label>
+            <input id="password" type="password" autoComplete="new-password" required minLength={8} maxLength={72}
+              value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 8 characters"
+              className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100" />
           </div>
-
-          {message && (
-            <p className="rounded-lg bg-blue-50 p-3 text-sm text-blue-700">
-              {message}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Creating account..." : "Create Account"}
+          {message && <p role="status" aria-live="polite" className="rounded-lg bg-blue-50 p-3 text-sm text-blue-700">{message}</p>}
+          <button type="submit" disabled={loading}
+            className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
+            {loading ? "Creating account…" : "Create account"}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-600">
-          Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-blue-600 hover:underline">
-            Login
-          </Link>
+        <p className="mt-6 text-center text-slate-600">
+          Already have an account? <Link href="/login" className="font-semibold text-blue-700 hover:underline">Log in</Link>
         </p>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
